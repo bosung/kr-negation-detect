@@ -15,16 +15,27 @@ def detect(sentence):
                 pos_result[nxt][1] == 'VX':
                 negs.append("NEG: {} -> {}".format(morph, pos_result[i+1][0]))
 
-        if (morph == '않') and pos == 'VX' and i > 1:
-           prepre = i-2
-           pre = i-1
-           if ((pos_result[i-2][1] == 'VV' or \
+        if ((morph == '않' and pos == 'VX') or \
+                (morph == '아니' and  pos == 'VCN')) \
+                and i > 1:
+            prepre = i-2
+            pre = i-1
+            if ((pos_result[i-2][1] == 'VV' or \
                    pos_result[i-2][1] == 'VA' or \
                    pos_result[i-2][1] == 'XSV') and pos_result[i-1][1] == 'EC') or \
-              (pos_result[i-2][1] == 'NNG' and \
-                   (pos_result[i-1][1] == 'JKO' or pos_result[i-1][1] == 'JX')):
+                ((pos_result[i-2][1] == 'NNG' or \
+                    pos_result[i-2][1] == 'NNB' or \
+                    pos_result[i-2][1] == 'NNP' or \
+                    pos_result[i-2][1] == 'NR' or \
+                    pos_result[i-2][1] == 'NP') and \
+                   (pos_result[i-1][1] == 'JKO' or \
+                   pos_result[i-1][1] == 'JX' or \
+                   pos_result[i-1][1] == 'JKS')):
                 negs.append("NEG: {} -> {}".format(morph, pos_result[i-2][0]))
+            elif pos_result[i-1][1] == 'NNB':
+                # ('-건'(NNB, 의존명사) exception)
+                negs.append("NEG: {} -> {}".format(morph, pos_result[i-1][0]))
 
     #print(pos_result)
-    for e in negs:
-        print(e)
+    return negs
+
